@@ -1,0 +1,4 @@
+ - compare local and gcloud gpx files
+ - adjust for local vs UTC time
+ - validate against wristwatch GPS
+ - readme.md
