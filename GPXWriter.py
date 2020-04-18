@@ -1,7 +1,7 @@
-# originally TrailDetective instantiated a GPXManager object...
-# ... but this required TrailDetective __main__ to know aboutGPXManager __init__, add_point, and finalize methods
+# originally TrailDetective instantiated a GPXWriter object...
+# ... but this required TrailDetective __main__ to know aboutGPXWriter __init__, add_point, and finalize methods
 # for better decoupling, switched to a single create_gpx_file call
-class GPXManager:
+class GPXWriter:
         
     def __init__(self, name):
         
@@ -10,7 +10,7 @@ class GPXManager:
         #header formalities
         self.f = open(self.name, "w+")
         self.f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        self.f.write('<gpx creator="GPXManager" version="1.1"\n')
+        self.f.write('<gpx creator="GPXWriter" version="1.1"\n')
         self.f.write('  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/11.xsd"\n')
         self.f.write('  xmlns="http://www.topografix.com/GPX/1/1"\n')
         self.f.write('  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n')
@@ -40,7 +40,7 @@ def create_gpx_file(name,point_list):
     #header formalities
     f = open(name, "w+")
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-    f.write('<gpx creator="GPXManager" version="1.1"\n')
+    f.write('<gpx creator="GPXWriter" version="1.1"\n')
     f.write('  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/11.xsd"\n')
     f.write('  xmlns="http://www.topografix.com/GPX/1/1"\n')
     f.write('  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n')

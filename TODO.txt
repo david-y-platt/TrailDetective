@@ -1,4 +1,24 @@
- - compare local and gcloud gpx files
- - adjust for local vs UTC time
- - validate against wristwatch GPS
- - readme.md
+
+ P calibrate btw watch and photo
+   x interpolate watch to second accuracy
+   - for each offset from -15 sec to + 15 sec: calculate MSE for all photos
+   - print MSE
+ 
+ - readme.md: https://github.com/matiassingers/awesome-readme
+   - https://en.wikipedia.org/wiki/Decimal_degrees
+ - test suite
+   - folder not found
+   - folder found but empty
+   - ambiguous folder
+   
+ 
+ x compare local and gcloud gpx files
+ x handle negative elevation in exif
+ x validate against wristwatch GPS
+ x sync date
+ x check for empty folder on gcloud
+ x adjust for local vs UTC time
+ 
+ 
+ N implement decimal for precision 
+ 
