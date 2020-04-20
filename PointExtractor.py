@@ -3,6 +3,7 @@ import os
 import xml.etree.ElementTree as ET
 import re
 import datetime as dt
+import pandas as pd
 
 #installed packages
 import PIL.Image
@@ -30,6 +31,11 @@ DATE_TAG = 29 # datetime for GPS data
 
 #list of valid file extensions for photos
 EXT_LIST = ('jpg','jpeg','gif','png','tiff','raw')
+
+LAT = 'lat'
+LON = 'lon'
+ELE = 'ele'
+DATETIME = 'datetime'
 
 class PointExtractor:
     
@@ -386,7 +392,8 @@ class PointExtractor:
         #get namespace which is needed to check name of later child nodes
         ns = re.match(r'{.*}', root.tag).group(0)
     
-        point_list = []
+        point_df = pd.DataFrame(columns=[LAT,LON,ELE])
+        point_df.index.name = DATETIME
       
         for track in root:
             #skip non-track top-level children, e.g. metadata
@@ -403,7 +410,7 @@ class PointExtractor:
                             ele = self.standardize_gpx_ele(opt_data.text)
                         elif opt_data.tag == ns + 'time':
                             datetime = self.standardize_gpx_datetime(opt_data.text)
-                    point_list.append((datetime,lat,lon,ele))
+                    point_df.loc[pd.to_datetime(datetime)] = {LAT:lat, LON:lon, ELE:ele}
     
-        point_list.sort()
-        return point_list
+        point_df.sort_index(inplace=True)
+        return point_df
