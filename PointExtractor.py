@@ -186,6 +186,8 @@ class PointExtractor:
           
     def get_points_local(self,dir,utc_zone):
         
+        print(f'Extracting points from local <{dir}>')
+        
         #track stats
         used_photo_ctr = 0
         skipped_photo_ctr = 0
@@ -252,12 +254,14 @@ class PointExtractor:
             
         tot_photos = used_photo_ctr + skipped_photo_ctr 
         print ("\n***** ANALYSIS COMPLETED *****\n")
-        print ("total photos processed:", tot_photos)
-        print ("photos missing GPS data:", skipped_photo_ctr , "(" +str(round(skipped_photo_ctr / tot_photos * 100,2)) + "%)")
+        print (f'total photos analyzed in <{dir}> : {tot_photos}')
+        print (f'analyzed photos missing GPS data: {skipped_photo_ctr} ({round(skipped_photo_ctr / tot_photos * 100,2)}%)')
             
         return point_list
     
     def get_points_gcloud(self,dir,utc_zone):
+        
+        print(f'Extracting points from gcloud <{dir}>')
         
         #track stats
         used_photo_ctr = 0
@@ -373,6 +377,8 @@ class PointExtractor:
         return point_list
     
     def get_points_gpx(self,gpx_file):
+        
+        print(f'Extracting points from gpx file <{gpx_file}>')
     
         tree = ET.parse(gpx_file)
         root = tree.getroot()

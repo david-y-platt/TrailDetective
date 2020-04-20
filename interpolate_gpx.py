@@ -2,14 +2,33 @@
 import argparse
 import datetime as dt
 import math
+import numpy as np
+import pandas as pd
 
 #local packages
 import PointExtractor
+import GPXWriter
 
+#positions in point tuple
 DATETIME = 0
 LAT = 1
 LON = 2
 ELE = 3
+
+def haversine_dist(lat1,lat2,lon1,lon2):
+    
+    # avg radius of eawrth in meters
+    R = 6371000
+    
+    delta_lat = math.radians(lat2 - lat1)
+    delta_lon = math.radians(lon2 - lon1)
+    lat1 = math.radians(lat1)
+    lat2 = math.radians(lat2)
+    
+    a = math.sin(delta_lat/2)**2 + math.cos(lat1)*math.cos(lat2)*math.sin(delta_lon/2)**2
+    c = 2*math.asin(math.sqrt(a))
+    
+    return R * c
 
 
 # 
@@ -64,53 +83,113 @@ def dictify_list(point_list):
     return d
 
 def calibrate_time(photo_point_list, ref_point_list):
-    pass
     
+    min_photo_dt = photo_point_list[0][DATETIME]
+    min_ref_dt = ref_point_list_interpolated[0][DATETIME]
+    min_offset = int((min_ref_dt - min_photo_dt).total_seconds())
+    
+    max_photo_dt = photo_point_list[-1][DATETIME]
+    max_ref_dt = ref_point_list_interpolated[-1][DATETIME]
+    max_offset = int((max_ref_dt - max_photo_dt).total_seconds())
+    
+    print(f'Testing calibration range: [{min_offset}, {max_offset}] sec')
+    
+    lo_err = float('inf')
+    best_offset = None
+    best_offset_point_list = None
+    
+    for offset in range(min_offset,max_offset+1):
+        offset_point_list = []
+        for i in range(len(photo_point_list)):
+            offset_point_list.append ( (photo_point_list[i][DATETIME] + dt.timedelta(seconds=offset),photo_point_list[i][LAT],photo_point_list[i][LON],photo_point_list[i][ELE] ))
+        err = calc_avg_err(offset_point_list,ref_point_list_interpolated)
+#         print(offset,err)
+        if err < lo_err:
+            lo_err = err
+            best_offset = offset    
+            best_offset_point_list = offset_point_list.copy()
+    
+    err_no_calibration = calc_avg_err(photo_point_list,ref_point_list_interpolated)
+    pct_reduction = (err_no_calibration - lo_err) / err_no_calibration * 100
+
+    print (f'calibration:\n'\
+           f'  uncalibrated_err:   {round(err_no_calibration,2)} m/point\n' \
+           f'  calibrated_err:     {round(lo_err,2)} m/point ({round(pct_reduction,2)}% reduction)\n' \
+           f'  calibration offset: {best_offset} sec')
+    
+    return best_offset_point_list
     
 def calc_avg_err(photo_point_list, ref_point_list):
     
-    ref_point_list = interpolate_list(ref_point_list)
     ref_point_dict = dictify_list(ref_point_list)
     
     err = 0
+    skipped_ctr = 0
             
     for photo_point in photo_point_list:
         ref_point = ref_point_dict.get(str(photo_point[DATETIME]))
         if ref_point is None:
             print('WARNING: photo datetime not found in interpolated datetime:', photo_point[DATETIME])
+            skipped_ctr += 1
             continue
-        err += math.sqrt( ( float(photo_point[LAT]) - float(ref_point[LAT]) ) ** 2 + ( float(photo_point[LON]) - float(ref_point[LON]) ) ** 2)
-        
-    print(err / len(photo_point_list))
+        err += haversine_dist(photo_point[LAT],ref_point[LAT],photo_point[LON],ref_point[LON])
+                
+    return err / (len(photo_point_list) - skipped_ctr)
+
+def calc_err_distribution(photo_point_list, ref_point_list):
     
+    ref_point_dict = dictify_list(ref_point_list)
+    ret = np.empty(shape=(len(photo_point_list)))
+
+    for i in range(len(photo_point_list)):
+        photo_point = photo_point_list[i]
+        ref_point = ref_point_dict.get(str(photo_point[DATETIME]))
+        if ref_point is None:
+            ret[i] = np.nan
+        else:            
+            ret[i] = haversine_dist(photo_point[LAT],ref_point[LAT],photo_point[LON],ref_point[LON])
+            print(round(ret[i],1),str(photo_point[DATETIME]))
+            print('  ',photo_point[LAT],ref_point[LAT])
+            print('  ',photo_point[LON],ref_point[LON])
+
+    return ret   
 
 if __name__ == '__main__':
     
-    parser = argparse.ArgumentParser()
-    parser.add_argument('source_file',  help='file to be interpolated')
-    parser.add_argument('ref_file',     help='file containing points that source will interpolate to')
-#     parser.add_argument('output_file',  help="output file name for GPX file, e.g. mytrail.gpx")
-
-    args = parser.parse_args()
+    source_file = None
+    
+    #local shortcut for local testing
+    source_file = 'wasson-local.gpx'
+    ref_file ='wasson-watch.gpx'
+    
+    if source_file is None:
+    
+        parser = argparse.ArgumentParser()
+        parser.add_argument('source_file',  help='reconstructed file')
+        parser.add_argument('ref_file',     help='golden source file')
+    #     parser.add_argument('output_file',  help="output file name for GPX file, e.g. mytrail.gpx")
+    
+        args = parser.parse_args()
+        
+        source_file = args.source_file
+        ref_file = args.ref_file
 
     
-    # first extract all date pts from ref_file and store in ordered list
-    # next extract all points from source file. if < 2 points throw err
-    # for ref pts < first source point, extrapolate
-    # interpolate
-    # for points > last ref point, extrapolate
     
-    # create element tree object 
     pe = PointExtractor.PointExtractor(stringify=False)
-    source_point_list = pe.get_points_gpx(args.source_file)
+    source_point_list = pe.get_points_gpx(source_file)
     if len(source_point_list) < 2:
-        raise Exception('<2 points detected in source file (at least 2 are needed): ' + args.source_file)
+        raise Exception('<2 points detected in source file (at least 2 are needed): ' + source_file)
 
-    ref_point_list = pe.get_points_gpx(args.ref_file)
+    ref_point_list = pe.get_points_gpx(ref_file)
     if len(ref_point_list) == 0:
-        raise Exception('0 points detected in ref file: ' + args.ref_file)
+        raise Exception('0 points detected in ref file: ' + ref_file)
     
-    calc_avg_err(source_point_list,ref_point_list)
-            
+    ref_point_list_interpolated = interpolate_list(ref_point_list)
+    calibrated_source_point_list = calibrate_time(source_point_list,ref_point_list_interpolated)
+    err_distribution = calc_err_distribution(calibrated_source_point_list,ref_point_list_interpolated)
+#     err_distribution = calc_err_distribution(source_point_list,ref_point_list_interpolated)
+    print(err_distribution)
+    print(np.mean(err_distribution),np.median(err_distribution))
     
     

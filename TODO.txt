@@ -1,8 +1,10 @@
-
+decimal degree to distance ref: https://en.wikipedia.org/wiki/Decimal_degrees
+	
  P calibrate btw watch and photo
    x interpolate watch to second accuracy
    - for each offset from -15 sec to + 15 sec: calculate MSE for all photos
    - print MSE
+   - negative time delta
  
  - readme.md: https://github.com/matiassingers/awesome-readme
    - https://en.wikipedia.org/wiki/Decimal_degrees
@@ -19,6 +21,10 @@
  x check for empty folder on gcloud
  x adjust for local vs UTC time
  
- 
  N implement decimal for precision 
  
+ === TRAILS === 
+lathrop jun 2
+high dune trail jul 29
+cathedral spires aug 5
+north crater trail aug 18
