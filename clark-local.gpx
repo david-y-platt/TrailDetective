@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx creator="GPXWriter" version="1.1"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/11.xsd"
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <trk>
+    <trkseg>
+      <trkpt lat="40.61481666666667" lon="-74.33323888888889">
+        <ele>-11.19</ele>
+        <time>2020-04-23T20:11:18.000Z</time>
+      </trkpt>
+      <trkpt lat="40.614336111111115" lon="-74.33190555555555">
+        <ele>-13.19</ele>
+        <time>2020-04-23T20:12:34.000Z</time>
+      </trkpt>
+      <trkpt lat="40.61402777777778" lon="-74.33108333333332">
+        <ele>-13.19</ele>
+        <time>2020-04-23T20:13:48.000Z</time>
+      </trkpt>
+      <trkpt lat="40.614755555555554" lon="-74.32988333333333">
+        <ele>-14.69</ele>
+        <time>2020-04-23T20:15:17.000Z</time>
+      </trkpt>
+      <trkpt lat="40.61946666666667" lon="-74.32583055555556">
+        <ele>-14.29</ele>
+        <time>2020-04-23T20:23:33.000Z</time>
+      </trkpt>
+      <trkpt lat="40.6201" lon="-74.32583055555556">
+        <ele>-14.29</ele>
+        <time>2020-04-23T20:24:29.000Z</time>
+      </trkpt>
+      <trkpt lat="40.6201" lon="-74.32583055555556">
+        <ele>-14.29</ele>
+        <time>2020-04-23T20:25:13.000Z</time>
+      </trkpt>
+      <trkpt lat="40.62108055555556" lon="-74.32429722222221">
+        <ele>-14.69</ele>
+        <time>2020-04-23T20:26:47.000Z</time>
+      </trkpt>
+      <trkpt lat="40.62175833333333" lon="-74.32386944444444">
+        <ele>-13.5</ele>
+        <time>2020-04-23T20:27:55.000Z</time>
+      </trkpt>
+      <trkpt lat="40.62262777777778" lon="-74.32542222222222">
+        <ele>-13.5</ele>
+        <time>2020-04-23T20:29:19.000Z</time>
+      </trkpt>
+      <trkpt lat="40.62251944444444" lon="-74.32517777777777">
+        <ele>-13.5</ele>
+        <time>2020-04-23T20:30:35.000Z</time>
+      </trkpt>
+      <trkpt lat="40.62196388888889" lon="-74.3261611111111">
+        <ele>-14.5</ele>
+        <time>2020-04-23T20:31:45.000Z</time>
+      </trkpt>
+      <trkpt lat="40.62132777777778" lon="-74.32725277777777">
+        <ele>-15.39</ele>
+        <time>2020-04-23T20:33:20.000Z</time>
+      </trkpt>
+      <trkpt lat="40.62025277777778" lon="-74.32774444444443">
+        <ele>-0.0</ele>
+        <time>2020-04-23T20:35:01.000Z</time>
+      </trkpt>
+      <trkpt lat="40.619625" lon="-74.32842222222222">
+        <ele>-13.39</ele>
+        <time>2020-04-23T20:36:08.000Z</time>
+      </trkpt>
+      <trkpt lat="40.619625" lon="-74.32842222222222">
+        <ele>-13.39</ele>
+        <time>2020-04-23T20:36:10.000Z</time>
+      </trkpt>
+      <trkpt lat="40.619625" lon="-74.32842222222222">
+        <ele>-13.39</ele>
+        <time>2020-04-23T20:36:11.000Z</time>
+      </trkpt>
+      <trkpt lat="40.617755555555554" lon="-74.32725555555555">
+        <ele>-14.39</ele>
+        <time>2020-04-23T20:41:19.000Z</time>
+      </trkpt>
+      <trkpt lat="40.61810555555556" lon="-74.32811111111111">
+        <ele>-15.39</ele>
+        <time>2020-04-23T20:42:50.000Z</time>
+      </trkpt>
+      <trkpt lat="40.618030555555556" lon="-74.32905833333334">
+        <ele>-16.19</ele>
+        <time>2020-04-23T20:43:56.000Z</time>
+      </trkpt>
+      <trkpt lat="40.618030555555556" lon="-74.32905833333334">
+        <ele>-16.19</ele>
+        <time>2020-04-23T20:43:58.000Z</time>
+      </trkpt>
+      <trkpt lat="40.618030555555556" lon="-74.32905833333334">
+        <ele>-16.19</ele>
+        <time>2020-04-23T20:43:59.000Z</time>
+      </trkpt>
+      <trkpt lat="40.618030555555556" lon="-74.32905833333334">
+        <ele>-16.19</ele>
+        <time>2020-04-23T20:44:00.000Z</time>
+      </trkpt>
+      <trkpt lat="40.618030555555556" lon="-74.32905833333334">
+        <ele>-16.19</ele>
+        <time>2020-04-23T20:44:02.000Z</time>
+      </trkpt>
+      <trkpt lat="40.61676666666667" lon="-74.3308">
+        <ele>-14.59</ele>
+        <time>2020-04-23T20:46:21.000Z</time>
+      </trkpt>
+      <trkpt lat="40.61665" lon="-74.33075">
+        <ele>-14.59</ele>
+        <time>2020-04-23T20:47:26.000Z</time>
+      </trkpt>
+      <trkpt lat="40.61665" lon="-74.33075">
+        <ele>-14.59</ele>
+        <time>2020-04-23T20:47:35.000Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

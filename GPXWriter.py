@@ -85,8 +85,8 @@ if __name__ == '__main__':
     
     #local shortcut for local testing
     dir_type = LOCAL
-    input_dir = 'Wasson'
-    utc_zone = -7
+    input_dir = 'clark'
+    utc_zone = -4
     
     if dir_type is None:
         parser = argparse.ArgumentParser()
