@@ -29,21 +29,23 @@ class GPXWriter:
         self.f.write('    <trkseg>\n')
 
     ###### #2 #####           
-    def add_point(self, lat, lon, ele=None, datetime=None):
+    def add_point(self, lat, lon, ele=None, datetime=None, dilution_of_precision=None):
         
         self.f.write('      <trkpt lat="' + lat + '" lon="' + lon + '">\n')
         if ele is not None:
             self.f.write('        <ele>'  + ele  + '</ele>\n')
         if datetime is not None:
             self.f.write('        <time>' + datetime + '</time>\n')
+        if dilution_of_precision is not None:
+            self.f.write('        <DOP>' + dilution_of_precision + '</DOP>\n')
         self.f.write('      </trkpt>\n')
         
     ###### #2a #####           
     def add_point_list(self, point_list):
         
         for point in point_list:
-            datetime, lat,lon,ele = point
-            self.add_point(lat,lon,ele,datetime)
+            datetime, lat, lon ,ele, dilution_of_precision = point
+            self.add_point(lat,lon,ele,datetime,dilution_of_precision)
     
     ###### #3 #####               
     def finalize(self):
@@ -85,14 +87,14 @@ if __name__ == '__main__':
     
     #local shortcut for local testing
     dir_type = LOCAL
-    input_dir = 'clark'
+    input_dir = 'clark_20200427'
     utc_zone = -4
     
     if dir_type is None:
         parser = argparse.ArgumentParser()
         parser.add_argument('dir_type',    choices={LOCAL, GCLOUD}, help='type of storage directory: local or gcloud')
         parser.add_argument('input_dir',                            help='input directory name')
-        parser.add_argument('--utc_zone',  type=int, default=0,     help="UTC timezone as an int offset from GMT, e.g. -4 or 3")
+        parser.add_argument('--utc_zone',  type=int, default=0,     help="UTC timezone as an int offset from GMT, e.g. 3 or -4")
         
         args = parser.parse_args()
         

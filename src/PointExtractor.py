@@ -27,6 +27,12 @@ LONGITUDE_TAG = 4
 ALTITUDE_SIGN_TAG = 5
 ALTITUDE_TAG = 6
 TIMESTAMP_TAG = 7 # datetime for GPS data
+SATELLITES_TAG = 8 #missing
+GPS_STATUS_TAG = 9 #missing
+GPS_MEASURE_MODE_TAG = 10 #missing
+GPS_PRECISION_TAG = 11
+GPS_SPEED_TAG = 13 #missing
+GPS_MAP_TAG = 18 #missing
 DATE_TAG = 29 # datetime for GPS data
 
 #list of valid file extensions for photos
@@ -36,6 +42,7 @@ LAT = 'lat'
 LON = 'lon'
 ELE = 'ele'
 DATETIME = 'datetime'
+DOP = 'DOP'
 
 class PointExtractor:
     
@@ -85,6 +92,17 @@ class PointExtractor:
         if self.stringify:
             ele = str(ele)
         return ele
+    
+    def standardize_exif_dilution_of_precision(self,exif_dilution_of_precision):
+        if exif_dilution_of_precision is None:
+             return None
+        dilution_of_precision = exif_dilution_of_precision[0] / exif_dilution_of_precision[1]
+        
+        if self.stringify:
+            dilution_of_precision = str(dilution_of_precision)
+        
+        print(dilution_of_precision)
+        return dilution_of_precision
         
     def standardize_exif_datetime(self,exif_datetime,utc_zone):
         
@@ -100,7 +118,6 @@ class PointExtractor:
         
         datetime = dt.datetime(int(year),int(month),int(day),int(hour),int(minute),int(sec))
         datetime += dt.timedelta(hours=-utc_zone)
-        
         
         if self.stringify:
             return ( str(datetime.year).zfill(2)   + '-'+
@@ -189,6 +206,12 @@ class PointExtractor:
              
             datetime = dt.datetime(int(year),int(month),int(day),int(hour),int(minute),int(sec))
             return datetime
+        
+    def standardize_gpx_DOP(self,dilution_of_precision):
+
+        if not self.stringify:
+            dilution_of_precision = float(dilution_of_precision)
+        return dilution_of_precision
           
     def get_points_local(self,dir,utc_zone):
         
@@ -221,7 +244,7 @@ class PointExtractor:
                 skipped_photo_ctr += 1
                 photo_image.close()
                 continue
-            
+                        
             try:       
                 lat = self.standardize_exif_lat(exif_data[GPS_GROUP_TAG][LATITUDE_TAG], exif_data[GPS_GROUP_TAG][NORTH_SOUTH_TAG])
             except:
@@ -252,9 +275,17 @@ class PointExtractor:
                 print("WARNING: skipping photo with invalid ele data:", photo) 
                 skipped_photo_ctr += 1
                 photo_image.close()
+                continue
+            
+            try:   
+                dilution_of_precision = self.standardize_exif_dilution_of_precision(exif_data[GPS_GROUP_TAG].get(GPS_PRECISION_TAG))
+            except:
+                print("WARNING: skipping photo with invalid dilution_of_precision data:", photo) 
+                skipped_photo_ctr += 1
+                photo_image.close()
                 continue  
     
-            point_list.append((datetime,lat,lon,ele))
+            point_list.append((datetime,lat,lon,ele,dilution_of_precision))
             used_photo_ctr += 1
             photo_image.close()
             
@@ -384,6 +415,9 @@ class PointExtractor:
     
     def get_points_gpx(self,gpx_file):
         
+        if not os.path.exists(gpx_file):
+            raise Exception(f'file not found: {gpx_file}')
+        
         print(f'Extracting points from gpx file <{gpx_file}>')
     
         tree = ET.parse(gpx_file)
@@ -392,7 +426,7 @@ class PointExtractor:
         #get namespace which is needed to check name of later child nodes
         ns = re.match(r'{.*}', root.tag).group(0)
     
-        point_df = pd.DataFrame(columns=[LAT,LON,ELE])
+        point_df = pd.DataFrame(columns=[LAT,LON,ELE,DOP])
         point_df.index.name = DATETIME
       
         for track in root:
@@ -405,12 +439,15 @@ class PointExtractor:
                     lon = self.standardize_gpx_lon(point.attrib['lon'])
                     ele = None
                     datetime = None
+                    dilution_of_precision = None
                     for opt_data in point:
                         if opt_data.tag == ns + 'ele':
                             ele = self.standardize_gpx_ele(opt_data.text)
                         elif opt_data.tag == ns + 'time':
                             datetime = self.standardize_gpx_datetime(opt_data.text)
-                    point_df.loc[pd.to_datetime(datetime)] = {LAT:lat, LON:lon, ELE:ele}
+                        elif opt_data.tag == ns + 'DOP':
+                            dilution_of_precision = self.standardize_gpx_DOP(opt_data.text)
+                    point_df.loc[pd.to_datetime(datetime)] = {LAT:lat, LON:lon, ELE:ele, DOP:dilution_of_precision}
     
         point_df.sort_index(inplace=True)
         return point_df

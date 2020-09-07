@@ -1,15 +1,10 @@
-decimal degree to distance ref: https://en.wikipedia.org/wiki/Decimal_degrees
-	
- P calibrate btw watch and photo
-   x interpolate watch to second accuracy
-   - for each offset from -15 sec to + 15 sec: calculate MSE for all photos
-   - print MSE
-   - negative time delta
+
 
 - how does program handle segments
+- plot gp data on map programatically
+- plot gpx data with uncertainty
  
  - readme.md: https://github.com/matiassingers/awesome-readme
-   - https://en.wikipedia.org/wiki/Decimal_degrees
  - test suite
    - folder not found
    - folder found but empty
@@ -30,4 +25,10 @@ decimal degree to distance ref: https://en.wikipedia.org/wiki/Decimal_degrees
  x check for empty folder on gcloud
  x adjust for local vs UTC time
  
- N implement decimal for precision
+ x calibrate btw watch and photo
+   x interpolate watch to second accuracy
+   x for each offset from -15 sec to + 15 sec: calculate MSE for all photos
+   x print MSE
+   x negative time delta
+ 
+ x implement decimal for precision
