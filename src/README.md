@@ -1,2 +1,2 @@
 # TrailDetective
-Reconstruct a hiking route from metadata of photos taken on the trail
+Scrape geolocation data from Google Cloud and/or local photos to reconstruct the route of a multiday hike
